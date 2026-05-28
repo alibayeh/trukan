@@ -6,12 +6,6 @@
 
 > **Important Notice**: The complete source code of the `trukan` package will be fully open-sourced on this repository **after the corresponding research paper is accepted by a peer-reviewed journal**.  
 
-## Table of Contents
-- [About TruKAN](#about-trukan)
-- [Generic Plotter & Pruner](#generic-plotter--pruner)
-- [Installation](#installation)
-- [License](#license)
-
 ## About TruKAN
 
 TruKAN preserves the canonical KAN topology and learnable univariate activations but replaces the computationally heavy B-spline basis with a family of **truncated power functions** `(x - t_j)_+^k` combined with a low-order polynomial term. This design maintains full expressiveness while improved the performance.
@@ -56,18 +50,55 @@ Key advantages demonstrated in the paper:
   </tr>
 </table>
 
+## Features
+
+- [x] Compiler
+- [x] Plotter
+    - [x] TruKAN
+    - [x] CustomKAN (ChebyKAN, EfficientKAN, SineKAN)
+- [ ] Pruner
+    - [x] TruKAN
+    - [ ] CustomKAN
+
+## Compiler
+
+- Compile a SymPy symbolic expression into a TruKan model.
+
+### Design differences vs. pykan's compiler
+- Pykan pins each edge to a symbolic function using ``fix_symbolic``, which writes to a parallel Symbolic_KANLayer.  TruKan has no symbolic layer. Instead, we *fit* the truncated-power-basis coefficients to the target 1-D function via ordinary least squares over ``knots_range``.  The fit quality depends on how well a degree-``degree`` truncated-power spline can represent the function; cubic (degree=3) is accurate for smooth elementary functions with a reasonably dense knot grid.
+
+- Pykan stores per-node and per-subnode affine parameters (``node_scale``, ``node_bias``, ``subnode_scale``, ``subnode_bias``) as learnable tensors. TruKan only has ``bias_out`` per layer, and the constant basis function (the '1' in [1, u, u², u³, …]) already absorbs constant offsets. We fold *every* affine transformation extracted during tree-parsing directly into the least-squares target function so the compiled model is self-contained and needs no extra parameters.
+
+- Standard TruKan is a sum-only KAN: the output of each layer is```
+   output_j = Σ_i  basis(x_i) @ coeffs[i, j, :]   ```
+Expressions with products of *distinct symbolic variables* (e.g. x*y, sin(x)*cos(y)) cannot be represented and are rejected.  See the section "Adding multiply nodes to TruKan" below for how to extend the model.
+
 ## Generic Plotter & Pruner
+- Why it is generic?
+  - **trukan** tools work with *any* KAN-style model that follows a minimal interface:
+    - Consistent naming convention.
+    - Implementation of a single method that returns the numerical activation functions.
 
-One of the major contributions of the `trukan` package is its **generic, extensible plotting** — a clear improvement over the original `pykan` implementation.
+- How it works?
+  - Any compatible KAN variation can be plotted automatically. No forking or rewriting of visualization code is required.
 
-### Why it is more generic
-- **trukan** tools work with *any* KAN-style model that follows a minimal interface:
-  - Consistent naming convention.
-  - Implementation of a single method that returns the numerical activation functions.
 
-### How it works
-Any compatible KAN variation can be plotted automatically. No forking or rewriting of visualization code is required.
+## Citation
+If you use this code in your research, please cite the following paper:
 
+```bibtex
+@ARTICLE{Bayeh2026TruKAN,
+  title         = "{TruKAN}: Towards more efficient {Kolmogorov-Arnold}
+                   networks using truncated power functions",
+  author        = "Bayeh, Ali and Sadaoui, Samira and Mouhoub, Malek",  
+  month         =  feb,
+  year          =  2026,
+  copyright     = "http://creativecommons.org/licenses/by/4.0/",
+  archivePrefix = "arXiv",
+  primaryClass  = "cs.CV",
+  eprint        = "2602.03879"
+}
+```
 
 ## License
 

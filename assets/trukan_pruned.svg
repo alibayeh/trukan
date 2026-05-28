@@ -1,16 +1,39 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
-   width="293.40002pt"
-   height="202.89601pt"
-   viewBox="0 0 293.40003 202.89602"
+   width="191.952pt"
+   height="179.43108pt"
+   viewBox="0 0 191.952 179.43109"
    version="1.1"
    id="svg63"
+   sodipodi:docname="trukan_pruned.svg"
+   inkscape:version="1.4.4 (dcaf3e7d9e, 2026-05-05)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:cc="http://creativecommons.org/ns#"
    xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="pt"
+     inkscape:zoom="2.4180594"
+     inkscape:cx="209.25871"
+     inkscape:cy="136.67985"
+     inkscape:window-width="1280"
+     inkscape:window-height="1369"
+     inkscape:window-x="20"
+     inkscape:window-y="20"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg63" />
   <metadata
      id="metadata1">
     <rdf:RDF>
@@ -33,8 +56,17 @@
        type="text/css"
        id="style1">*{stroke-linejoin: round; stroke-linecap: butt}</style>
   </defs>
+  <rect
+     style="fill:#ffffff;stroke-width:2.11189;stroke-linecap:square;stroke-linejoin:round;paint-order:stroke fill markers"
+     id="rect1"
+     width="191.37247"
+     height="179.27599"
+     x="0.31016591"
+     y="7.3990243e-08"
+     ry="15.411545" />
   <g
-     id="figure_1">
+     id="figure_1"
+     transform="translate(-50.724001,-11.732465)">
     <g
        id="axes_1">
       <g

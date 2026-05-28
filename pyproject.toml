@@ -1,0 +1,80 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "trukan"
+dynamic = ["version"]
+description = 'Kolmogorov-Arnold Networks Using Truncated Power Functions'
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+keywords = []
+authors = [
+  { name = "Ali Bayeh", email = "alibayeh@uregina.ca" },
+]
+classifiers = [
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Operating System :: OS Independent",
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/alibayeh/trukan"
+Repository = "https://github.com/alibayeh/trukan"
+Issues = "https://github.com/alibayeh/trukan/issues"
+Changelog = "https://github.com/alibayeh/trukan/blob/main/CHANGELOG.md"
+
+[tool.hatch.version]
+path = "src/trukan/__about__.py"
+
+[tool.hatch.envs.types]
+extra-dependencies = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "ruff>=0.4",
+    "mypy>=1.0",
+    "build>=1.0",
+    "twine>=5.0",
+]
+[tool.hatch.envs.types.scripts]
+check = "mypy --install-types --non-interactive {args:src/trukan tests}"
+
+[tool.coverage.run]
+source_pkgs = ["trukan", "tests"]
+branch = true
+parallel = true
+omit = [
+  "src/trukan/__about__.py",
+]
+
+[tool.coverage.paths]
+trukan = ["src/trukan", "*/trukan/src/trukan"]
+tests = ["tests", "*/trukan/tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/my_project"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--cov=my_project --cov-report=term-missing"
+
+[tool.ruff]
+line-length = 88
+src = ["src"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]

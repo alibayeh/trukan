@@ -2,13 +2,16 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="170.57835mm"
+   width="170.57837mm"
    height="108.39703mm"
-   viewBox="0 0 170.57835 108.39703"
+   viewBox="0 0 170.57837 108.39702"
    version="1.1"
    id="svg1"
-   sodipodi:docname="TruKAN_fixed.svg"
-   inkscape:version="1.4.2 (ebf0e940d0, 2025-05-08)"
+   sodipodi:docname="trukan_fixed.svg"
+   inkscape:export-filename="trukan_fixed.svg"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   inkscape:version="1.4.4 (dcaf3e7d9e, 2026-05-05)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -23,15 +26,16 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
-     inkscape:zoom="1.9969328"
-     inkscape:cx="333.51148"
-     inkscape:cy="212.57601"
-     inkscape:window-width="1590"
+     inkscape:export-bgcolor="#ffffffff"
+     inkscape:zoom="1.4120447"
+     inkscape:cx="353.03415"
+     inkscape:cy="251.05437"
+     inkscape:window-width="1213"
      inkscape:window-height="1369"
      inkscape:window-x="20"
      inkscape:window-y="20"
      inkscape:window-maximized="0"
-     inkscape:current-layer="layer1-4" />
+     inkscape:current-layer="svg1" />
   <defs
      id="defs1">
     <marker
@@ -51,9 +55,17 @@
          id="path4-5-5" />
     </marker>
   </defs>
+  <rect
+     style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.71783;stroke-linecap:square;stroke-linejoin:round;paint-order:stroke fill markers"
+     id="rect2"
+     width="170.32481"
+     height="108.30334"
+     x="0.37475196"
+     y="0.18737598"
+     ry="5.0464635" />
   <g
      id="layer1"
-     transform="translate(-18.195802,-97.819621)">
+     transform="translate(-18.195803,-97.819618)">
     <g
        id="layer1-4"
        transform="translate(0.16924272,-101.43502)">
@@ -403,7 +415,7 @@
                  y="326.34106">X</tspan></text>
           </g>
           <path
-             style="fill:none;stroke:#ff7f0e;stroke-width:1.78445;stroke-dasharray:14.27560043,3.56890011,1.78445006,3.56890011;stroke-dashoffset:0;stroke-opacity:1"
+             style="fill:none;stroke:#ff7f0e;stroke-width:1.78445;stroke-dasharray:14.2756, 3.5689, 1.78445, 3.5689;stroke-dashoffset:0;stroke-opacity:1"
              d="m -6.1158309,229.24175 c 26.2916449,0.40664 39.5585029,0.74062 47.1726789,-1.12413 10.73004,-2.62784 18.84199,-17.43316 25.54176,-42.5888"
              id="path2-0" />
           <text
@@ -474,8 +486,7 @@
           <path
              style="fill:none;stroke:#ff7f0e;stroke-width:1.31553;stroke-dasharray:1.31553, 1.31553;stroke-dashoffset:0;stroke-opacity:1"
              d="m 55.326126,95.063179 c 0.977522,-0.01245 3.298219,-0.01005 3.709233,-0.0076"
-             id="path2-0-4-5-8-4"
-             sodipodi:nodetypes="cc" />
+             id="path2-0-4-5-8-4" />
           <text
              xml:space="preserve"
              style="font-size:4.39397px;line-height:1.2;font-family:'Noto Serif';-inkscape-font-specification:'Noto Serif';text-align:start;letter-spacing:-0.0617901px;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#ff7f0e;fill-opacity:1;stroke:#ff7f0e;stroke-width:0;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
@@ -527,7 +538,7 @@
                id="path1-2-9-7-8-4" />
           </g>
           <path
-             style="fill:none;stroke:#1f77b4;stroke-width:1.78445;stroke-dasharray:7.13780022,3.56890011;stroke-dashoffset:0;stroke-opacity:1"
+             style="fill:none;stroke:#1f77b4;stroke-width:1.78445;stroke-dasharray:7.1378, 3.5689;stroke-dashoffset:0;stroke-opacity:1"
              d="m 54.851423,319.54708 c 12.838093,-12.16858 27.77093,-9.10881 35.573911,-8.3562 12.654236,1.22052 27.007986,-1.334 37.556116,-14.85292"
              id="path2-5" />
         </g>
@@ -555,8 +566,7 @@
           <path
              style="fill:none;stroke:#1f77b4;stroke-width:1.59673;stroke-dasharray:1.59673, 1.59673;stroke-dashoffset:0;stroke-opacity:1"
              d="m 54.60911,95.205452 c 0.538686,0.0051 3.949771,-0.0134 4.522355,-0.0019"
-             id="path2-0-4-5-1-4-7"
-             sodipodi:nodetypes="cc" />
+             id="path2-0-4-5-1-4-7" />
         </g>
       </g>
     </g>
