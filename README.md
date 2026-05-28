@@ -69,7 +69,7 @@ Key advantages demonstrated in the paper:
 
 - Standard TruKan is a sum-only KAN: the output of each layer is```
    output_j = Σ_i  basis(x_i) @ coeffs[i, j, :]   ```
-Expressions with products of *distinct symbolic variables* (e.g. x*y, sin(x)*cos(y)) cannot be represented and are rejected.  See the section "Adding multiply nodes to TruKan" below for how to extend the model.
+Expressions with products of *distinct symbolic variables* (e.g. x*y, sin(x)*cos(y)) cannot be represented and are rejected.
 
 ## Generic Plotter & Pruner
 - Why it is generic?
@@ -101,3 +101,6 @@ If you use this code in your research, please cite the following paper:
 ## License
 
 `trukan` is distributed under the terms of the [MIT](https://spdx.org/licenses/MIT.html) license.
+
+## Acknowledgements
+The design and implementation ideas for the compiler, pruner, and plotter components were influenced by the approaches used in PyKAN.
