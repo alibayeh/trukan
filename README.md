@@ -4,8 +4,6 @@
 
 **TruKAN** is a Python package implementing a novel, efficient variation of Kolmogorov-Arnold Networks (KANs). It replaces the B-spline basis with truncated power functions derived from k-order spline theory, better interpretability, and strong performance on real-world tasks.
 
-> **Important Notice**: The complete source code of the `trukan` package will be fully open-sourced on this repository **after the corresponding research paper is accepted by a peer-reviewed journal**.  
-
 ## About TruKAN
 
 TruKAN preserves the canonical KAN topology and learnable univariate activations but replaces the computationally heavy B-spline basis with a family of **truncated power functions** `(x - t_j)_+^k` combined with a low-order polynomial term. This design maintains full expressiveness while improved the performance.
