@@ -8,7 +8,7 @@ import torch.nn as nn
 from src.trukan.trukan_plotter import TruKanPlotter
 from src.trukan.utils import create_dataset
 
-from .test_utils import train
+from .utils import train
 
 ############ # Copied from https://github.com/SynodicMonth/ChebyKAN
 
@@ -65,33 +65,18 @@ class ChebyKANLayer(nn.Module):
         self, x: torch.Tensor
     ) -> tuple[torch.Tensor, torch.Tensor, None, None]:
         original_shape = x.shape
-        x = x.reshape(-1, self.inputdim)  # (batch, in)
-
-        # Normalize input to [-1, 1] domain of Chebyshev polynomials
-        x_tanh = torch.tanh(x)  # (batch, in)
-
-        # Expand for each polynomial degree: (batch, in, degree+1)
+        x = x.reshape(-1, self.inputdim)
+        x_tanh = torch.tanh(x)
         x_expanded = x_tanh.unsqueeze(-1).expand(-1, -1, self.degree + 1)
-
-        # T_k(x) = cos(k * arccos(x))
         cheby_basis = torch.cos(self.arange * torch.acos(x_expanded))
-        # shape: (batch, inputdim, degree+1)
-
-        # --- Per-connection contributions ---
-        # cheby_coeffs: (inputdim, outdim, degree+1)
-        # Sum over degree axis only → keep (batch, out, in) per-connection view
-        # einsum: b=batch, i=in, d=degree, o=out  →  "bid,iod->boi"
         cheby_per_connection = torch.einsum(
-            "bid,iod->boi", cheby_basis, self.cheby_coeffs
-        )  # (batch, outdim, inputdim)
-
-        # Sum over in_features to produce final output
-        y = cheby_per_connection.sum(dim=2)  # (batch, outdim)
+            "bid,iod->bio", cheby_basis, self.cheby_coeffs
+        )
+        y = cheby_per_connection.sum(dim=1)
         y = y.reshape(*original_shape[:-1], self.outdim)
-        # Reshape intermediate to (*original_shape, outdim) to match efficientKAN convention
-        # intermediate = cheby_per_connection.view(*original_shape, self.outdim)
-        intermediate = cheby_per_connection.reshape(*original_shape, self.outdim)
-        # No base branch, no separate spline scaler → both extra slots are None
+        intermediate = cheby_per_connection.reshape(
+            *original_shape[:-1], self.inputdim, self.outdim
+        )
         return y, intermediate, None, None
 
 
