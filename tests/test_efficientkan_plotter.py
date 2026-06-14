@@ -8,7 +8,7 @@ import torch.nn.functional as F
 from src.trukan.trukan_plotter import TruKanPlotter
 from src.trukan.utils import create_dataset
 
-from .test_utils import train
+from .utils import train
 
 ############ # Copied from https://github.com/Blealtan/efficient-kan
 
@@ -174,10 +174,17 @@ class KANLinear(torch.nn.Module):
         spline_per_connection = torch.einsum(
             "bik,jik->bji", spline_basis, spline_weight_reshaped
         )
-        intermediate = base_per_connection + spline_per_connection
-        y = torch.sum(intermediate, dim=2)
-        y = y.reshape(*original_shape[:-1], self.out_features)
-        return y, intermediate.view((*original_shape, self.out_features)), None, None
+        intermediate = base_per_connection + spline_per_connection  # [B, out, in]
+        y = intermediate.sum(dim=2).reshape(*original_shape[:-1], self.out_features)
+        intermediate = intermediate.transpose(1, 2).contiguous()  # [B, in, out]
+        return (
+            y,
+            intermediate.reshape(
+                *original_shape[:-1], self.in_features, self.out_features
+            ),
+            None,
+            None,
+        )
 
 
 class KAN(torch.nn.Module):

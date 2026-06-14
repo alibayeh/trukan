@@ -7,7 +7,7 @@ import torch
 from src.trukan.trukan_plotter import TruKanPlotter
 from src.trukan.utils import create_dataset
 
-from .test_utils import train
+from .utils import train
 
 ############ # Copied from https://github.com/ereinha/SineKAN
 
@@ -109,33 +109,18 @@ class SineKANLayer(torch.nn.Module):
         self, x: torch.Tensor
     ) -> tuple[torch.Tensor, torch.Tensor, None, None]:
         original_shape = x.shape
-        x = x.reshape(-1, self.input_dim)  # (batch, input_dim)
+        x = x.reshape(-1, self.input_dim)
 
         x_reshaped = x.reshape(x.shape[0], 1, x.shape[1], 1)
-        # (batch, 1, input_dim, 1) * (1, 1, 1, grid_size) + (1, 1, input_dim, grid_size)
         s = torch.sin(x_reshaped * self.freq + self.phase)
-        # s: (batch, 1, input_dim, grid_size)
+        s = s.squeeze(1)
+        sine_per_connection = torch.einsum("bkl,jkl->bkj", s, self.amplitudes)
 
-        # Squeeze the broadcast singleton dim so indices are explicit
-        s = s.squeeze(1)  # (batch, input_dim, grid_size)  →  b, k, l
-
-        # --- Per-connection contributions ---
-        # amplitudes: (output_dim, input_dim, grid_size)  →  j, k, l
-        # Contract over grid_size (l) only; keep input_dim (k) per-connection
-        # einsum: b=batch, k=input_dim, l=grid_size, j=output_dim  →  "bkl,jkl->bjk"
-        sine_per_connection = torch.einsum(
-            "bkl,jkl->bjk", s, self.amplitudes
-        )  # (batch, output_dim, input_dim)
-
-        # Sum over input_dim to produce output — mirrors torch.sum(intermediate, dim=2)
-        y = sine_per_connection.sum(dim=2)  # (batch, output_dim)
-
-        # Bias is a global per-output offset, not per-connection; add to y only
+        y = sine_per_connection.sum(dim=1)
         if self.add_bias:
             y = y + self.bias
 
         y = y.reshape(*original_shape[:-1], self.output_dim)
-        # Reshape to (*original_shape, output_dim) to match efficientKAN convention
         # intermediate = sine_per_connection.view(*original_shape, self.output_dim)
         intermediate = sine_per_connection.reshape(*original_shape, self.output_dim)
         return y, intermediate, None, None
