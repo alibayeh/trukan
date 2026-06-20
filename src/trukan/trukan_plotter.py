@@ -127,10 +127,11 @@ class SetupPlot:
         # size (height/width) of operations (sum and mult)
         y2 = 0.15 / np.maximum(max_neuron, 5)
 
+        top_y = (neuron_depth - 1) * y0 + 2 * z0
         fig, ax = plt.subplots(
             figsize=(
                 10 * self._scale,
-                10 * self._scale * (neuron_depth - 1) * (y0 + z0),
+                10 * self._scale * top_y,
             ),
             dpi=600,
         )
@@ -155,10 +156,11 @@ class SetupPlot:
 
             # scatters inputs/outputs
             if depth == 0 or depth == len(layers_hidden) - 1:
+                node_y = top_y if depth == neuron_depth - 1 else depth * (y0 + z0)
                 for i in range(n_act):
                     plt.scatter(
                         1 / (2 * n_act) + i / n_act,
-                        depth * (y0 + z0),
+                        node_y,
                         s=min_spacing**2 * 5000 * self._scale**2,
                         color=self._colors.get("in_out"),
                     )
@@ -189,20 +191,20 @@ class SetupPlot:
                             print(
                                 f"alpha: {[np.shape(k) for k in alpha]}, depth: {depth}, j: {j}, i: {i}, {e}"
                             )
-
+            # final sum -> output node
             if depth == neuron_depth - 2:
-                plt.plot(
-                    [
-                        1 / (2 * layers_hidden[depth + 1]),
-                        1 / (2 * layers_hidden[depth + 1]),
-                    ],
-                    [depth * (y0 + z0) + y0 / 2, (depth + 1) * (y0 + z0)],
-                    color=self._colors.get("connections"),
-                    lw=2 * self._scale,
-                )
+                n_out = layers_hidden[depth + 1]
+                for j in range(n_out):
+                    x_out = 1 / (2 * n_out) + j / n_out
+                    plt.plot(
+                        [x_out, x_out],
+                        [depth * y0 + y0, top_y],
+                        color=self._colors.get("connections"),
+                        lw=2 * self._scale,
+                    )
 
             plt.xlim(0, 1)
-            plt.ylim(-0.1 * (y0 + z0), (neuron_depth - 1 + 0.1) * (y0 + z0))
+            plt.ylim(-0.1 * (y0 + z0), top_y + 0.1 * (y0 + z0))
 
         plt.axis("off")
 
@@ -398,6 +400,8 @@ class SetupPlot:
 
         if self._full_path is not None:
             fig.savefig(self._full_path, bbox_inches="tight", format=self._save_format)
+
+        return fig
 
 
 class TruKanPlotter:
