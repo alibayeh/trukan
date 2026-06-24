@@ -24,14 +24,26 @@ def dataset():
     yield dataset
 
 
-@pytest.fixture
-def model(device):
+@pytest.fixture(
+    params=[
+        {"name": "fixed_shared", "learn": False, "shared": True},
+        {"name": "fixed_individual", "learn": False, "shared": False},
+        {"name": "learn_shared", "learn": True, "shared": True},
+        {"name": "learn_individual", "learn": True, "shared": False},
+    ]
+)
+def model(request, device):
+    config = request.param
+    learn = config["learn"]
+    shared = config["shared"]
+
     model = TruKan(
         layers_hidden=[2, 3, 1],
-        num_knots=3,
+        num_knots=5,
         degree=3,
         knots_range=(-2, 2),
-        learn_knots=False,
+        learn_knots=learn,
+        shared_knots=shared,
         device=device,
     )
     model = model.to(device)
@@ -53,13 +65,17 @@ def trained_model_meta(model, dataset):
 def test_pruning(trained_model_meta, dataset, device):
     trained_model, model_metadata = trained_model_meta
     num_knots = trained_model.num_knots
+    learn = list(trained_model.layers.values())[0].learn_knots
+    share = list(trained_model.layers.values())[0].shared_knots
+    suffix = "_learn" if learn else "_fixed"
+    suffix += "_share" if share else "_indiv"
 
     TruKanPlotter.setup_plot(
         model=trained_model,
         data=dataset["test_input"],
         num_knots=num_knots,
     ).with_sub_components().with_grid().with_scatter_points().save_to(
-        os.path.join("./figures", "truKan_prun_test_1"),
+        os.path.join("./figures", f"truKan_prun{suffix}1"),
     ).build_plot(model_metadata)
 
     pruner = TruKanPruner(trained_model)
@@ -72,20 +88,24 @@ def test_pruning(trained_model_meta, dataset, device):
         data=dataset["test_input"],
         num_knots=num_knots,
     ).with_sub_components().with_grid().with_scatter_points().save_to(
-        os.path.join("./figures", "truKan_prun_test_2"),
+        os.path.join("./figures", f"truKan_prun{suffix}2"),
     ).build_plot()
 
 
 def test_autopruning(trained_model_meta, dataset, device):
     trained_model, model_metadata = trained_model_meta
     num_knots = trained_model.num_knots
+    learn = list(trained_model.layers.values())[0].learn_knots
+    share = list(trained_model.layers.values())[0].shared_knots
+    suffix = "_learn" if learn else "_fixed"
+    suffix += "_share" if share else "_indiv"
 
     TruKanPlotter.setup_plot(
         model=trained_model,
         data=dataset["test_input"],
         num_knots=num_knots,
     ).with_sub_components().with_grid().with_scatter_points().save_to(
-        os.path.join("./figures", "truKan_autoprun_test_1"),
+        os.path.join("./figures", f"truKan_autoprun{suffix}1"),
     ).build_plot(model_metadata)
 
     pruner = TruKanPruner(trained_model)
@@ -98,7 +118,7 @@ def test_autopruning(trained_model_meta, dataset, device):
         data=dataset["test_input"],
         num_knots=num_knots,
     ).with_sub_components().with_grid().with_scatter_points().save_to(
-        os.path.join("./figures", "truKan_autoprun_test_2"),
+        os.path.join("./figures", f"truKan_autoprun{suffix}2"),
     ).build_plot()
 
 
