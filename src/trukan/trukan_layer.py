@@ -182,18 +182,19 @@ class TruKanLayer(nn.Module):
 
             return output, intermediate, intermediate_d, intermediate_n
         else:
-            raise Exception(
-                "TruKAN with individual knots per output is not supported yet."
-            )
             x_expanded = x.unsqueeze(2).expand(-1, -1, self.out_dim)
             knots = self.get_knots()
             basis = self.compute_basis(x_expanded, knots)
-            # output = torch.einsum("biod,iod->bo", basis, self.coeffs) + self.bias_out
-            intermediate = basis.unsqueeze(2) * self.coeffs.unsqueeze(
-                0
-            )  # shape: (batch, input, output, basis_size)
-            intermediate = intermediate.sum(
-                dim=3
-            )  # sum over basis_size, shape: (batch, input, output)
-            output = intermediate.sum(dim=1)  # sum over input, shape: (batch, output)
-            return output, intermediate
+
+            basis_d, basis_n = torch.split(
+                basis, [self.degree + 1, self.num_knots], dim=-1
+            )
+            coeffs_d, coeffs_n = torch.split(
+                self.coeffs, [self.degree + 1, self.num_knots], dim=-1
+            )
+            intermediate_d = (basis_d * coeffs_d.unsqueeze(0)).sum(dim=3)
+            intermediate_n = (basis_n * coeffs_n.unsqueeze(0)).sum(dim=3)
+
+            intermediate = intermediate_d + intermediate_n
+            output = intermediate.sum(dim=1)
+            return output, intermediate, intermediate_d, intermediate_n
