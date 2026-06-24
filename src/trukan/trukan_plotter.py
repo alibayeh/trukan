@@ -106,12 +106,49 @@ class SetupPlot:
     def _get_normalized_figure_coordinates(self, fig: Figure, ax: Axes, x):
         return fig.transFigure.inverted().transform(ax.transData.transform(x))
 
+    def _edge_grid_positions(self, layer_knots, depth, i, j, x_min, x_max):
+        """Grid/knot x-positions for the edge (i, j) at this depth.
+
+        Uses the model's true knot positions when available so that
+        models with "shared_knots=False" show each edge's own knots. Shared models
+        expose knots of shape (in_dim, num_knots) and non-shared (per-edge) models
+        expose (in_dim, out_dim, num_knots). Only knots inside the visible data
+        span [x_min, x_max] are drawn, since a truncated-power knot outside that
+        range is not an active "knee" within the plotted curve.
+
+        Falls back to evenly spaced positions for models that don't expose get_knots().
+        """
+        if layer_knots is not None and layer_knots[depth] is not None:
+            knots = layer_knots[depth]
+            edge_knots = knots[i, j] if knots.ndim == 3 else knots[i]
+            edge_knots = np.asarray(edge_knots, dtype=float)
+            edge_knots = edge_knots[(edge_knots >= x_min) & (edge_knots <= x_max)]
+            return np.sort(edge_knots)
+
+        n = self._num_knots if self._num_knots is not None else 5
+        return np.linspace(x_min, x_max, n)
+
     def build_plot(self, truKan_attribution: TruKanMetadata | None = None):
         # intermediates_in, intermediates_out = register_hooks(model)
         matplotlib.use("Agg")
         inputs, intermediates, intermediate_d, intermediate_n = (
             self._model.forward_traced(self._data)
         )
+
+        # Real knot positions per layer (in input space), used to place grid
+        # lines and scatter markers at the model's actual knots. Guarded so
+        # models that don't expose get_knots() simply fall back to a heuristic.
+        layers = getattr(self._model, "layers", None)
+        if layers is not None:
+            layer_knots = []
+            for layer in layers.values():
+                get_knots = getattr(layer, "get_knots", None)
+                if get_knots is None:
+                    layer_knots.append(None)
+                else:
+                    layer_knots.append(get_knots().detach().cpu().numpy())
+        else:
+            layer_knots = None
 
         layers_hidden = np.array(self._model.layers_hidden)
         y0 = 0.3  # height: from input to pre-mult
@@ -261,7 +298,11 @@ class SetupPlot:
                     y_values = intermediates[depth][:, i, j][rank]
                     x_min = np.min(x_values)
                     x_max = np.max(x_values)
-                    grid_positions = np.linspace(x_min, x_max, self._num_knots)
+
+                    # grid_positions = np.linspace(x_min, x_max, self._num_knots)
+                    grid_positions = self._edge_grid_positions(
+                        layer_knots, depth, i, j, x_min, x_max
+                    )
 
                     if (
                         self._sub_components
